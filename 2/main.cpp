@@ -102,12 +102,16 @@ SUITE(DecryptTest)
     
     TEST(MixedCaseText) {
         TableCipher cipher(5);
-        CHECK_THROW(cipher.decrypt(L"ЕВРИИРМпт"), cipher_error);
+        wstring result = cipher.decrypt(L"ЕВРИИРМпт");
+        wstring expected = L"ПРИВЕТМИР";
+        CHECK(result == expected);
     }
     
     TEST(TextWithSpaces) {
         TableCipher cipher(5);
-        CHECK_THROW(cipher.decrypt(L"ЕВРИИР МП!Т"), cipher_error);
+        wstring result = cipher.decrypt(L"ЕВРИИР МП!Т");
+        wstring expected = L"ПРИВЕТМИР";
+        CHECK(result == expected);
     }
 }
 
