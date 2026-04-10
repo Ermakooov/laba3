@@ -8,11 +8,13 @@ using namespace std;
 SUITE(KeyTest)
 {
     TEST(ValidKey) {
-        CHECK_NOTHROW(TableCipher cp(4));
+        TableCipher cp(4);
+        CHECK(true);
     }
     
     TEST(BigKey) {
-        CHECK_NOTHROW(TableCipher cp(234));
+        TableCipher cp(234);
+        CHECK(true);
     }
     
     TEST(InvalidKey) {
@@ -28,32 +30,37 @@ SUITE(EncryptTest)
 {
     TEST(ValidText) {
         TableCipher cipher(5);
-        CHECK_EQUAL(L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ", 
-                    cipher.encrypt(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН"));
+        wstring result = cipher.encrypt(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН");
+        wstring expected = L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ";
+        CHECK(result == expected);
     }
     
     TEST(Key4ValidText) {
         TableCipher cipher(4);
-        CHECK_EQUAL(L"ВИИМРТПЕР", 
-                    cipher.encrypt(L"ПРИВЕТМИР"));
+        wstring result = cipher.encrypt(L"ПРИВЕТМИР");
+        wstring expected = L"ВИИМРТПЕР";
+        CHECK(result == expected);
     }
     
     TEST(BigKeyText) {
         TableCipher cipher(234);
-        CHECK_EQUAL(L"РИМТЕВИРП", 
-                    cipher.encrypt(L"ПРИВЕТМИР"));
+        wstring result = cipher.encrypt(L"ПРИВЕТМИР");
+        wstring expected = L"РИМТЕВИРП";
+        CHECK(result == expected);
     }
     
     TEST(MixedCaseText) {
         TableCipher cipher(5);
-        CHECK_EQUAL(L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ", 
-                    cipher.encrypt(L"никитаермаковдвадцатьтриптодин"));
+        wstring result = cipher.encrypt(L"никитаермаковдвадцатьтриптодин");
+        wstring expected = L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ";
+        CHECK(result == expected);
     }
     
     TEST(TextWithSpaces) {
         TableCipher cipher(5);
-        CHECK_EQUAL(L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ", 
-                    cipher.encrypt(L"НИКИТА ЕРМАКОВ ДВАДЦАТЬ ТРИ ПТ ОДИН"));
+        wstring result = cipher.encrypt(L"НИКИТА ЕРМАКОВ ДВАДЦАТЬ ТРИ ПТ ОДИН");
+        wstring expected = L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ";
+        CHECK(result == expected);
     }
     
     TEST(EmptyText) {
@@ -71,14 +78,16 @@ SUITE(DecryptTest)
 {
     TEST(ValidText) {
         TableCipher cipher(5);
-        CHECK_EQUAL(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН", 
-                    cipher.decrypt(L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ"));
+        wstring result = cipher.decrypt(L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ");
+        wstring expected = L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН";
+        CHECK(result == expected);
     }
     
     TEST(Key4ValidText) {
         TableCipher cipher(4);
-        CHECK_EQUAL(L"ПРИВЕТМИР", 
-                    cipher.decrypt(L"ВИИМРТПЕР"));
+        wstring result = cipher.decrypt(L"ВИИМРТПЕР");
+        wstring expected = L"ПРИВЕТМИР";
+        CHECK(result == expected);
     }
     
     TEST(EmptyText) {
