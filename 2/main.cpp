@@ -8,122 +8,98 @@ using namespace std;
 SUITE(KeyTest)
 {
     TEST(ValidKey) {
-        wstring t1 = L"ВИИМРТПЕР";
-        wstring t2 = TableCipher(4).encrypt(L"ПРИВЕТМИР");
-        if (t1==t2){
-        CHECK(true);
-    	}
-    	else{
-    	CHECK(false);
-    	}
-    	}
-
+        CHECK_NOTHROW(TableCipher cp(4));
+    }
+    
+    TEST(BigKey) {
+        CHECK_NOTHROW(TableCipher cp(234));
+    }
+    
     TEST(InvalidKey) {
         CHECK_THROW(TableCipher cp(-4), cipher_error);
     }
     
-    TEST(EmptyKey) {
+    TEST(ZeroKey) {
         CHECK_THROW(TableCipher cp(0), cipher_error);
     }
-    TEST(BigKey) {
-        wstring t1 = L"РИМТЕВИРП";
-        wstring t2 = TableCipher(234).encrypt(L"ПРИВЕТМИР");
-        if (t1==t2){
-        CHECK(true);
-    	}
-    	else{
-    	CHECK(false);
-    	}
-    	}
-    
 }
 
 SUITE(EncryptTest)
 {
     TEST(ValidText) {
-        wstring t1 = L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ";
-        wstring t2 = TableCipher(5).encrypt(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН");
-        if (t1==t2){
-        CHECK(true);
-    	}
-    	else{
-    	CHECK(false);
-    	}
+        TableCipher cipher(5);
+        CHECK_EQUAL(L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ", 
+                    cipher.encrypt(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН"));
     }
-
-    TEST(EmptyText) {
-        CHECK_THROW(TableCipher(5).encrypt(L""), cipher_error);
+    
+    TEST(Key4ValidText) {
+        TableCipher cipher(4);
+        CHECK_EQUAL(L"ВИИМРТПЕР", 
+                    cipher.encrypt(L"ПРИВЕТМИР"));
     }
-
-    TEST(NonAlphaText) {
-        CHECK_THROW(TableCipher(5).encrypt(L"ПРИВЕТ123"), cipher_error);
+    
+    TEST(BigKeyText) {
+        TableCipher cipher(234);
+        CHECK_EQUAL(L"РИМТЕВИРП", 
+                    cipher.encrypt(L"ПРИВЕТМИР"));
     }
-
+    
     TEST(MixedCaseText) {
-        wstring t1 = L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ";
-        wstring t2 = TableCipher(5).encrypt(L"никитаермаковдвадцатьтриптодин");
-        if (t1==t2){
-        CHECK(true);
-    	}
-    	else{
-    	CHECK(false);
-    	}
+        TableCipher cipher(5);
+        CHECK_EQUAL(L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ", 
+                    cipher.encrypt(L"никитаермаковдвадцатьтриптодин"));
     }
-
+    
     TEST(TextWithSpaces) {
-        wstring t1 = L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ";
-        wstring t2 = TableCipher(5).encrypt(L"НИКИТА ЕРМАКОВ ДВАДЦАТЬ ТРИ ПТ ОДИН");
-        if (t1==t2){
-        CHECK(true);
-    	}
-    	else{
-    	CHECK(false);
-    	}
+        TableCipher cipher(5);
+        CHECK_EQUAL(L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ", 
+                    cipher.encrypt(L"НИКИТА ЕРМАКОВ ДВАДЦАТЬ ТРИ ПТ ОДИН"));
+    }
+    
+    TEST(EmptyText) {
+        TableCipher cipher(5);
+        CHECK_THROW(cipher.encrypt(L""), cipher_error);
+    }
+    
+    TEST(NonAlphaText) {
+        TableCipher cipher(5);
+        CHECK_THROW(cipher.encrypt(L"ПРИВЕТ123"), cipher_error);
     }
 }
 
 SUITE(DecryptTest)
 {
     TEST(ValidText) {
-        wstring t1 = L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН";
-        wstring t2 = TableCipher(5).decrypt(L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ");
-        if (t1==t2){
-        CHECK(true);
-    	}
-    	else{
-    	CHECK(false);
-    	}
+        TableCipher cipher(5);
+        CHECK_EQUAL(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН", 
+                    cipher.decrypt(L"ТАВТПНИМДАИИКРВЦРДИЕОДТОНАКАЬТ"));
     }
-
+    
+    TEST(Key4ValidText) {
+        TableCipher cipher(4);
+        CHECK_EQUAL(L"ПРИВЕТМИР", 
+                    cipher.decrypt(L"ВИИМРТПЕР"));
+    }
+    
     TEST(EmptyText) {
-        CHECK_THROW(TableCipher(5).decrypt(L""), cipher_error);
+        TableCipher cipher(5);
+        CHECK_THROW(cipher.decrypt(L""), cipher_error);
     }
-
+    
     TEST(NonAlphaText) {
-        CHECK_THROW(TableCipher(5).decrypt(L"ПРИВЕТ123"), cipher_error);
+        TableCipher cipher(5);
+        CHECK_THROW(cipher.decrypt(L"ПРИВЕТ123"), cipher_error);
     }
-
+    
     TEST(MixedCaseText) {
-        wstring t1 = L"ПРИВЕТМИР";
-        wstring t2 = TableCipher(5).decrypt(L"ЕВРИИРМпт");
-        if (t1==t2){
-        CHECK(true);
-    	}
-    	else{
-    	CHECK(false);
-    	}	
+        TableCipher cipher(5);
+        CHECK_THROW(cipher.decrypt(L"ЕВРИИРМпт"), cipher_error);
     }
-
+    
     TEST(TextWithSpaces) {
-        wstring t1 = L"ПРИВЕТМИР";
-        wstring t2 = TableCipher(5).decrypt(L"ЕВРИИР МП!Т");
-        if (t1==t2){
-        CHECK(true);
-    	}
-    	else{
-    	CHECK(false);
-    	}	
-}
+        TableCipher cipher(5);
+        CHECK_THROW(cipher.decrypt(L"ЕВРИИР МП!Т"), cipher_error);
+    }
 }
 
 int main(int argc, char** argv) {
