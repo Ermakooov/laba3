@@ -5,10 +5,8 @@
 
 using namespace std;
 
-// ========== ТЕСТЫ КОНСТРУКТОРА (только конструктор!) ==========
 SUITE(KeyTest)
 {
-    // Проверка, что конструктор НЕ бросает исключение с корректным ключом
     TEST(ValidKey) { 
         CHECK_NOTHROW(modAlphaCipher cp(L"НИКИТА"));
     }
@@ -21,7 +19,6 @@ SUITE(KeyTest)
         CHECK_NOTHROW(modAlphaCipher cp(L"никита"));
     }
     
-    // Проверка, что конструктор БРОСАЕТ исключение с неверными ключами
     TEST(DigitsInKey) { 
         CHECK_THROW(modAlphaCipher cp(L"Б1"), cipher_error);
     }
@@ -43,7 +40,6 @@ SUITE(KeyTest)
     }
 }
 
-// ========== ФИКСТУРА ДЛЯ ТЕСТОВ С КЛЮЧОМ "Б" ==========
 struct KeyB_fixture {
     modAlphaCipher* p;
     KeyB_fixture() { 
@@ -54,7 +50,6 @@ struct KeyB_fixture {
     }
 };
 
-// ========== ТЕСТЫ ШИФРОВАНИЯ (только encrypt!) ==========
 SUITE(EncryptTest)
 {
     TEST_FIXTURE(KeyB_fixture, UpCaseString) {
@@ -91,7 +86,6 @@ SUITE(EncryptTest)
     }
 }
 
-// ========== ТЕСТЫ РАСШИФРОВАНИЯ (только decrypt!) ==========
 SUITE(DecryptText)
 {
     TEST_FIXTURE(KeyB_fixture, UpCaseString) {
@@ -125,7 +119,6 @@ SUITE(DecryptText)
     }
 }
 
-// ========== ЗАПУСК ТЕСТОВ ==========
 int main(int argc, char** argv) {
     std::locale loc("ru_RU.UTF-8");
     std::locale::global(loc);
