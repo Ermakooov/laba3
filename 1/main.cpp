@@ -7,69 +7,76 @@ using namespace std;
 
 SUITE(KeyTest)
 {
-    TEST(ValidKey) { 
-        CHECK_NOTHROW(modAlphaCipher cp(L"НИКИТА"));
+    TEST(ValidKey) {
+        modAlphaCipher cp(L"НИКИТА");
+        CHECK(true);
     }
     
-    TEST(LongKey) { 
-        CHECK_NOTHROW(modAlphaCipher cp(L"НИКИТАНИКИТАНИКИТА"));
+    TEST(LongKey) {
+        modAlphaCipher cp(L"НИКИТАНИКИТАНИКИТА");
+        CHECK(true);
     }
     
-    TEST(LowCaseKey) { 
-        CHECK_NOTHROW(modAlphaCipher cp(L"никита"));
+    TEST(LowCaseKey) {
+        modAlphaCipher cp(L"никита");
+        CHECK(true);
     }
     
-    TEST(DigitsInKey) { 
+    TEST(DigitsInKey) {
         CHECK_THROW(modAlphaCipher cp(L"Б1"), cipher_error);
     }
     
-    TEST(PunctuationInKey) { 
+    TEST(PunctuationInKey) {
         CHECK_THROW(modAlphaCipher cp(L"Б,С"), cipher_error);
     }
     
-    TEST(WhitespaceInKey) { 
+    TEST(WhitespaceInKey) {
         CHECK_THROW(modAlphaCipher cp(L"Б С"), cipher_error);
     }
     
-    TEST(EmptyKey) { 
+    TEST(EmptyKey) {
         CHECK_THROW(modAlphaCipher cp(L""), cipher_error);
     }
     
-    TEST(WeakKey) { 
+    TEST(WeakKey) {
         CHECK_THROW(modAlphaCipher cp(L"ААА"), cipher_error);
     }
 }
 
 struct KeyB_fixture {
     modAlphaCipher* p;
-    KeyB_fixture() { 
+    KeyB_fixture() {
         p = new modAlphaCipher(L"Б");
     }
-    ~KeyB_fixture() { 
-        delete p; 
+    ~KeyB_fixture() {
+        delete p;
     }
 };
 
 SUITE(EncryptTest)
 {
     TEST_FIXTURE(KeyB_fixture, UpCaseString) {
-        CHECK_EQUAL(L"ОЙЛЙУБЁСНБЛПГЕГБЕЧБУЭУСЙРУПЕЙО", 
-                    p->encrypt(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН"));
+        wstring result = p->encrypt(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН");
+        wstring expected = L"ОЙЛЙУБЁСНБЛПГЕГБЕЧБУЭУСЙРУПЕЙО";
+        CHECK(result == expected);
     }
     
     TEST_FIXTURE(KeyB_fixture, LowCaseString) {
-        CHECK_EQUAL(L"ОЙЛЙУБЁСНБЛПГЕГБЕЧБУЭУСЙРУПЕЙО", 
-                    p->encrypt(L"никитаермаковдвадцатьтриптодин"));
+        wstring result = p->encrypt(L"никитаермаковдвадцатьтриптодин");
+        wstring expected = L"ОЙЛЙУБЁСНБЛПГЕГБЕЧБУЭУСЙРУПЕЙО";
+        CHECK(result == expected);
     }
     
     TEST_FIXTURE(KeyB_fixture, StringWithWhitspaceAndPunct) {
-        CHECK_EQUAL(L"ОЙЛЙУБЁСНБЛПГЕГБЕЧБУЭУСЙРУПЕЙО", 
-                    p->encrypt(L"НИКИТА ЕРМАКОВ, ДВАДЦАТЬ ТРИ ПТ, ОДИН"));
+        wstring result = p->encrypt(L"НИКИТА ЕРМАКОВ, ДВАДЦАТЬ ТРИ ПТ, ОДИН");
+        wstring expected = L"ОЙЛЙУБЁСНБЛПГЕГБЕЧБУЭУСЙРУПЕЙО";
+        CHECK(result == expected);
     }
     
     TEST_FIXTURE(KeyB_fixture, StringWithNumbers) {
-        CHECK_EQUAL(L"ТОПГЬНДПЕПН", 
-                    p->encrypt(L"С Новым 2025 Годом"));
+        wstring result = p->encrypt(L"С Новым 2025 Годом");
+        wstring expected = L"ТОПГЬНДПЕПН";
+        CHECK(result == expected);
     }
     
     TEST_FIXTURE(KeyB_fixture, EmptyString) {
@@ -81,16 +88,18 @@ SUITE(EncryptTest)
     }
     
     TEST(MaxShiftKey) {
-        CHECK_EQUAL(L"МЗЙЗСЯДПЛЯЙНБГБЯГХЯСЫСПЗОСНГЗМ", 
-                    modAlphaCipher(L"Я").encrypt(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН"));
+        wstring result = modAlphaCipher(L"Я").encrypt(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН");
+        wstring expected = L"МЗЙЗСЯДПЛЯЙНБГБЯГХЯСЫСПЗОСНГЗМ";
+        CHECK(result == expected);
     }
 }
 
 SUITE(DecryptText)
 {
     TEST_FIXTURE(KeyB_fixture, UpCaseString) {
-        CHECK_EQUAL(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН", 
-                    p->decrypt(L"ОЙЛЙУБЁСНБЛПГЕГБЕЧБУЭУСЙРУПЕЙО"));
+        wstring result = p->decrypt(L"ОЙЛЙУБЁСНБЛПГЕГБЕЧБУЭУСЙРУПЕЙО");
+        wstring expected = L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН";
+        CHECK(result == expected);
     }
     
     TEST_FIXTURE(KeyB_fixture, LowCaseString) {
@@ -114,8 +123,9 @@ SUITE(DecryptText)
     }
     
     TEST(MaxShiftKey) {
-        CHECK_EQUAL(L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН", 
-                    modAlphaCipher(L"Я").decrypt(L"МЗЙЗСЯДПЛЯЙНБГБЯГХЯСЫСПЗОСНГЗМ"));
+        wstring result = modAlphaCipher(L"Я").decrypt(L"МЗЙЗСЯДПЛЯЙНБГБЯГХЯСЫСПЗОСНГЗМ");
+        wstring expected = L"НИКИТАЕРМАКОВДВАДЦАТЬТРИПТОДИН";
+        CHECK(result == expected);
     }
 }
 
